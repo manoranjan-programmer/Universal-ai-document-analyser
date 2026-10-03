@@ -54,10 +54,12 @@ data/
 *.json.gz
 
 # Model artifacts (large files - use artifact export)
-artifacts/faiss/*.index
-artifacts/faiss/*.bin
-artifacts/metadata/*.pkl
-artifacts/metadata/*.npy
+# Allow precomputed vector index and metadata for deployment
+!artifacts/faiss/document_index.faiss
+!artifacts/faiss/faiss_index.bin
+!artifacts/metadata/chunks_metadata.pkl
+!artifacts/metadata/embeddings.npy
+
 
 # Uploaded documents (user data)
 backend/uploads/
@@ -101,6 +103,9 @@ torch_cache/
 # Poppler binaries (add your own)
 poppler/
 
-# FAISS index files
+# FAISS index files (except precomputed artifacts)
 *.faiss
 *.index
+!artifacts/faiss/*.faiss
+!artifacts/faiss/*.bin
+

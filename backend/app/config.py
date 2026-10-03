@@ -124,16 +124,36 @@ class Settings(BaseSettings):
         return self.max_file_size_mb * 1024 * 1024
 
     @property
+    def resolved_artifacts_dir(self) -> str:
+        """Resolves the artifacts directory regardless of current working directory."""
+        if os.path.isdir(self.artifacts_dir):
+            return os.path.abspath(self.artifacts_dir)
+        repo_artifacts = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "..", "..", "artifacts")
+        )
+        if os.path.isdir(repo_artifacts):
+            return repo_artifacts
+        if os.path.isdir("artifacts"):
+            return os.path.abspath("artifacts")
+        return os.path.abspath(self.artifacts_dir)
+
+    @property
     def faiss_index_path(self) -> str:
-        return os.path.join(self.artifacts_dir, "faiss", "document_index.faiss")
+        bin_path = os.path.join(self.resolved_artifacts_dir, "faiss", "faiss_index.bin")
+        if os.path.exists(bin_path):
+            return bin_path
+        doc_path = os.path.join(self.resolved_artifacts_dir, "faiss", "document_index.faiss")
+        if os.path.exists(doc_path):
+            return doc_path
+        return bin_path
 
     @property
     def metadata_path(self) -> str:
-        return os.path.join(self.artifacts_dir, "metadata", "chunks_metadata.pkl")
+        return os.path.join(self.resolved_artifacts_dir, "metadata", "chunks_metadata.pkl")
 
     @property
     def artifact_config_path(self) -> str:
-        return os.path.join(self.artifacts_dir, "config.json")
+        return os.path.join(self.resolved_artifacts_dir, "config.json")
 
 
 @lru_cache()

@@ -66,7 +66,7 @@ def save_registry():
             mongo_store.save_encrypted_document(k, v)
 
         # 2. Local fallback metadata backup
-        reg_file = os.path.join(settings.artifacts_dir, "metadata", "documents_registry.json")
+        reg_file = os.path.join(settings.resolved_artifacts_dir, "metadata", "documents_registry.json")
         os.makedirs(os.path.dirname(reg_file), exist_ok=True)
         data = {}
         for k, v in _documents.items():
@@ -79,8 +79,8 @@ def save_registry():
 
         # 3. Save FAISS store
         store = get_vector_store(dimension=settings.embedding_dimension)
-        index_file = os.path.join(settings.artifacts_dir, "faiss", "faiss_index.bin")
-        meta_file = os.path.join(settings.artifacts_dir, "metadata", "chunks_metadata.pkl")
+        index_file = settings.faiss_index_path
+        meta_file = settings.metadata_path
         store.save(index_file, meta_file)
         logger.info(f"Persisted {len(_documents)} documents (encrypted in MongoDB) and {store.total_chunks} chunks.")
     except Exception as e:
@@ -112,7 +112,7 @@ def load_registry():
     # 2. If MongoDB was empty or unreachable, fallback to disk registry if present
     if not _documents:
         try:
-            reg_file = os.path.join(settings.artifacts_dir, "metadata", "documents_registry.json")
+            reg_file = os.path.join(settings.resolved_artifacts_dir, "metadata", "documents_registry.json")
             if os.path.exists(reg_file):
                 with open(reg_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
@@ -130,11 +130,13 @@ def load_registry():
     # 3. Load FAISS vector store
     try:
         store = get_vector_store(dimension=settings.embedding_dimension)
-        index_file = os.path.join(settings.artifacts_dir, "faiss", "faiss_index.bin")
-        meta_file = os.path.join(settings.artifacts_dir, "metadata", "chunks_metadata.pkl")
+        index_file = settings.faiss_index_path
+        meta_file = settings.metadata_path
         if os.path.exists(index_file) and os.path.exists(meta_file):
             store.load(index_file, meta_file)
             logger.info(f"Loaded FAISS store with {store.total_chunks} chunks.")
+        else:
+            logger.warning(f"FAISS index or metadata not found at: {index_file}, {meta_file}")
     except Exception as e:
         logger.warning(f"Failed to load FAISS store: {e}")
 

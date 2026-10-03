@@ -44,9 +44,10 @@ async def lifespan(app: FastAPI):
 
     # Ensure upload directory exists
     os.makedirs(settings.upload_dir, exist_ok=True)
-    os.makedirs(os.path.join(settings.artifacts_dir, "faiss"), exist_ok=True)
-    os.makedirs(os.path.join(settings.artifacts_dir, "metadata"), exist_ok=True)
+    os.makedirs(os.path.join(settings.resolved_artifacts_dir, "faiss"), exist_ok=True)
+    os.makedirs(os.path.join(settings.resolved_artifacts_dir, "metadata"), exist_ok=True)
     logger.info(f"   Upload directory: {settings.upload_dir}")
+    logger.info(f"   Artifacts dir   : {settings.resolved_artifacts_dir}")
 
     # Load persisted document registry and vector store
     from app.services.document_service import load_registry
@@ -73,14 +74,22 @@ app = FastAPI(
 )
 
 # ── CORS Middleware ────────────────────────────────────────────────────────────
+allowed_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+if settings.frontend_url:
+    for u in settings.frontend_url.split(","):
+        u = u.strip()
+        if u and u not in allowed_origins:
+            allowed_origins.append(u)
+
+allow_all = "*" in allowed_origins or settings.frontend_url == "*"
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        settings.frontend_url,
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
-    allow_credentials=True,
+    allow_origins=["*"] if allow_all else allowed_origins,
+    allow_credentials=not allow_all,
     allow_methods=["*"],
     allow_headers=["*"],
 )
