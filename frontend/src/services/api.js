@@ -6,10 +6,16 @@
 import axios from 'axios'
 
 // ── Axios instance ─────────────────────────────────────────────
-const rawBaseUrl = import.meta.env.VITE_API_URL || ''
-const normalizedBase = rawBaseUrl.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUrl
+let rawBaseUrl = (import.meta.env.VITE_API_URL || '').trim()
+if (rawBaseUrl.endsWith('/')) {
+  rawBaseUrl = rawBaseUrl.slice(0, -1)
+}
+const apiBaseUrl = rawBaseUrl
+  ? (rawBaseUrl.endsWith('/api') ? rawBaseUrl : `${rawBaseUrl}/api`)
+  : '/api'
+
 const api = axios.create({
-  baseURL: normalizedBase ? `${normalizedBase}/api` : '/api',
+  baseURL: apiBaseUrl,
   timeout: 120000, // 2 min — OCR can be slow on large PDFs
   headers: { 'Content-Type': 'application/json' },
 })
