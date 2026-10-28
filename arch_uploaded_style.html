@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    width: 1100px;
+    height: 1050px;
+    background: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 40px;
+    position: relative;
+}
+.title {
+    font-size: 34px;
+    font-weight: 800;
+    color: #000000;
+    margin-bottom: 45px;
+    text-align: center;
+    letter-spacing: -0.5px;
+}
+.diagram {
+    width: 1020px;
+    height: 880px;
+    position: relative;
+}
+/* Nodes */
+.node {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 19px;
+    font-weight: 500;
+    color: #000;
+    border-radius: 28px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    line-height: 1.25;
+}
+.node-ui {
+    left: 10px; top: 15px; width: 145px; height: 95px;
+    background-color: #dbeafe; border: 2px solid #93c5fd;
+}
+.node-upload {
+    left: 200px; top: 15px; width: 155px; height: 95px;
+    background-color: #dcfce7; border: 2px solid #86efac;
+}
+.node-extract {
+    left: 400px; top: 15px; width: 160px; height: 95px;
+    background-color: #fef9c3; border: 2px solid #fde047;
+}
+.node-core {
+    left: 605px; top: 15px; width: 400px; height: 95px;
+    background-color: #f3e8ff; border: 2px solid #d8b4fe;
+    border-radius: 40px;
+}
+.node-retrieval {
+    left: 555px; top: 185px; width: 155px; height: 105px;
+    background-color: #ffe4e6; border: 2px solid #fecdd3;
+}
+.node-qa {
+    left: 730px; top: 185px; width: 155px; height: 105px;
+    background-color: #fef3c7; border: 2px solid #fde68a;
+}
+.node-citation {
+    left: 905px; top: 185px; width: 155px; height: 105px;
+    background-color: #ccfbf1; border: 2px solid #99f6e4;
+}
+.node-dashboard {
+    left: 720px; top: 375px; width: 175px; height: 105px;
+    background-color: #f1f5f9; border: 2px solid #cbd5e1;
+    border-radius: 35px;
+}
+.node-storage {
+    left: 720px; top: 565px; width: 175px; height: 110px;
+    background-color: #2563eb; border: 2px solid #1d4ed8;
+    color: #ffffff; font-weight: 600;
+}
+.feedback-label {
+    position: absolute;
+    left: 420px; top: 785px;
+    font-size: 21px;
+    font-weight: 500;
+    color: #000;
+    text-align: center;
+}
+svg {
+    position: absolute;
+    left: 0; top: 0; width: 100%; height: 100%;
+    pointer-events: none;
+}
+</style>
+</head>
+<body>
+    <div class="title">Universal AI Document Analyzer Architecture</div>
+    <div class="diagram">
+        <svg viewBox="0 0 1020 880">
+            <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000000" />
+                </marker>
+            </defs>
+            <!-- UI -> Upload -->
+            <line x1="155" y1="62" x2="198" y2="62" stroke="#000" stroke-width="2" marker-end="url(#arrow)" />
+            <!-- Upload -> Extract -->
+            <line x1="355" y1="62" x2="398" y2="62" stroke="#000" stroke-width="2" marker-end="url(#arrow)" />
+            <!-- Extract -> Core -->
+            <line x1="560" y1="62" x2="603" y2="62" stroke="#000" stroke-width="2" marker-end="url(#arrow)" />
+
+            <!-- Core -> 3 modules -->
+            <line x1="720" y1="110" x2="640" y2="183" stroke="#000" stroke-width="2" marker-end="url(#arrow)" />
+            <line x1="805" y1="110" x2="805" y2="183" stroke="#000" stroke-width="2" marker-end="url(#arrow)" />
+            <line x1="890" y1="110" x2="975" y2="183" stroke="#000" stroke-width="2" marker-end="url(#arrow)" />
+
+            <!-- 3 modules -> Dashboard -->
+            <line x1="640" y1="290" x2="745" y2="373" stroke="#000" stroke-width="2" marker-end="url(#arrow)" />
+            <line x1="805" y1="290" x2="805" y2="373" stroke="#000" stroke-width="2" marker-end="url(#arrow)" />
+            <line x1="975" y1="290" x2="870" y2="373" stroke="#000" stroke-width="2" marker-end="url(#arrow)" />
+
+            <!-- Dashboard -> Storage -->
+            <line x1="807" y1="480" x2="807" y2="563" stroke="#000" stroke-width="2" marker-end="url(#arrow)" />
+
+            <!-- Feedback Loop from Upload to Storage -->
+            <path d="M 277 110 L 277 810 L 807 810 L 807 677" fill="none" stroke="#000" stroke-width="2" marker-end="url(#arrow)" />
+        </svg>
+
+        <!-- Nodes -->
+        <div class="node node-ui">User<br>Interface</div>
+        <div class="node node-upload">Document<br>Upload</div>
+        <div class="node node-extract">Text<br>Extraction</div>
+        <div class="node node-core">AI Document Intelligence<br><span style="font-size:16px; font-weight:normal; color:#4b5563;">(Semantic Engine)</span></div>
+
+        <div class="node node-retrieval">Vector<br>Search<br><span style="font-size:14px; color:#475569;">(FAISS Store)</span></div>
+        <div class="node node-qa">Grounded<br>Q&A Module<br><span style="font-size:14px; color:#475569;">(RAG + LLM)</span></div>
+        <div class="node node-citation">Source<br>Citations<br><span style="font-size:14px; color:#475569;">(Attribution)</span></div>
+
+        <div class="node node-dashboard">Results<br>Dashboard</div>
+        <div class="node node-storage">Secure Data<br>Storage<br><span style="font-size:15px; font-weight:normal; opacity:0.9;">(MongoDB Atlas)</span></div>
+
+        <div class="feedback-label">Feedback<br>Loop</div>
+    </div>
+</body>
+</html>
